@@ -33,19 +33,17 @@ n <- names(train)
 f <- as.formula(paste("Class ~", paste(n[!n %in% "Class"], collapse = " + ")))
 
 # Traditional Logistic Regression Model.
-creditLR <- glm(f, data=train, family = binomial())
+creditLR <- glm(f, data=train, family = binomial("logit"))
 
 # Calculating the ROC curve for the model.
-# 1. Predic the reponse from test
-creditLR.result<-predict(creditLR,type='response',test)
+# 1. Predict the reponse from test
+creditLR.result <- predict(creditLR,type='response',test)
 
-resultframe <- data.frame(actual=test$Class, prediction=creditLR.result)
-resultframe$prediction <- round(resultframe$prediction)
+resultframe <- data.frame(actual=test$Class, probability=creditLR.result)
+resultframe$prediction <- round(resultframe$probability)
 
 # Confusion matrix
 library(caret)
-xtab <- table(resultframe$prediction, resultframe$actual)
-confusionMatrix(xtab)
 confusionMatrix(data=as.factor(resultframe$prediction), reference = as.factor(resultframe$actual), positive = "1")
 
 
@@ -58,25 +56,12 @@ resultframe["newclass"] <- ifelse(resultframe["actual"]==0 & resultframe["predic
 (conf.val <- table(resultframe["newclass"]))
 
 
-# 2. Store the prediction in results
+# Plotting the ROC and calculating the AUC
 result <-  prediction(creditLR.result, test$Class)
-
 perf <- performance(result,"tpr","fpr")
 plot(perf)
-
 performance(result, "auc")
 
-#get results of terms in regression
-g <- predict(creditLR, type='terms', test)
-
-# function to pick top 3 reasons
-# works by sorting coefficient terms in equation
-# and selecting top 3 in sort for each loan scored
-ftopk <- function(x,top=3){
-  res=names(x)[order(x, decreasing = TRUE)][1:top]
-  paste(res,collapse=";",sep="")
-}
-# Application of the function using the top 3 rows
-topk=apply(g,1,ftopk,top=3)
-
-plot(perf,col='red',lty=1,main='ROC curve for Logistic Regression')
+logitmodel.prediction<-prediction(creditLR.result, test$Class)
+logitmodel.performance<-performance(logitmodel.prediction,"tpr","fpr")
+logitmodel.auc<-performance(logitmodel.prediction,"auc")@y.values[[1]]
