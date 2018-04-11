@@ -1,0 +1,42 @@
+  0   1 
+279 294
+
+Confusion Matrix and Statistics
+
+          Reference
+Prediction      0      1
+         0 104310     12
+         1   9415    186
+                                                
+               Accuracy : 0.9172511             
+                 95% CI : (0.9156363, 0.9188447)
+    No Information Rate : 0.998262              
+    P-Value [Acc > NIR] : 1                     
+                                                
+                  Kappa : 0.0346754             
+ Mcnemar's Test P-Value : <0.0000000000000002   
+                                                
+            Sensitivity : 0.939393939           
+            Specificity : 0.917212574           
+         Pos Pred Value : 0.019372982           
+         Neg Pred Value : 0.999884972           
+             Prevalence : 0.001738016           
+         Detection Rate : 0.001632682           
+   Detection Prevalence : 0.084276222           
+      Balanced Accuracy : 0.928303257           
+                                                
+       'Positive' Class : 1
+	   
+FN     FP     TN     TP 
+12   9415 104310    186 
+
+Accuracy:  0.9172511258
+Classification Error Rate: 0.08274887424
+Precision: 0.01937298198
+Sensitivity (TPR): 0.9393939394
+Specificity (TNR) : 0.9172125742 
+F1 Score : 0.03796305745
+AUC: 0.9361193602
+Calculated AUC: 0.97667
+pROC package: AUC: 0.976139
+ROCR package: 0.9726553

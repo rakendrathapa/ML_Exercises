@@ -1,7 +1,7 @@
 set.seed(1234567890)
 library(neuralnet)
 
-setwd("C:/Users/rakendra/Documents/MyCodes/MachineLearning/ML_Exercises/dataset/")
+setwd("C:/Users/ThapaRak/Documents/MyCodes/ML_Exercises/dataset/")
 load("creditcard.Rdata")
 
 ## head(creditcard)
@@ -31,17 +31,40 @@ test <- dataset[-index,]
 n <- names(train)
 f <- as.formula(paste("Class ~", paste(n[!n %in% "Class"], collapse = " + ")))
 
+# Data Preprocessing.
+# 1. Calculate Beta. Based on Percent.
+# 2. Calculate Threshold. Based on original N+/(N).
+# 2. Send the data for training.
+# 3. Adjust Posterior Probability.
+# 4. Adjust Threshold.
+# 5. Make Prediction.
+library(ROSE)
+NPlus <- sum(train$Class == 1)
+NMinus <- sum(train$Class == 0)
+percent=0.50
+Beta = ((1/percent) - 1) * (NPlus/ NMinus)
+threshold = NPlus / (NPlus + NMinus)
+
+undersampled_train <- ovun.sample(f, data = train, method = "under", p=percent, seed = 1)$data
+table(undersampled_train$Class)
+
 # ANN for studying the data
-creditnet <- neuralnet(f, data=train, hidden=c(20), lifesign = "minimal", linear.output = FALSE, threshold = 0.1)
+creditnet <- neuralnet(f, data=undersampled_train, hidden=c(20), lifesign = "minimal", linear.output = FALSE, threshold = 0.1)
 
 ## plot NN
-plot(creditnet, rep="best")
+# plot(creditnet, rep="best")
 
 ## test the resulting output
 temp_test <- test[,1:(NCOL(test) - 1)]
 creditnet.results <- compute(creditnet, temp_test)
 result <- data.frame(actual=test$Class, probability=creditnet.results$net.result)
-result$prediction <- round(result$probability)
+
+# Calibrate the Probability
+result$calibratedProbab = (Beta * result$probability) / ((Beta * result$probability) - result$probability + 1)
+result$prediction[result$calibratedProbab < threshold] <- 0
+result$prediction[result$calibratedProbab >= threshold] <- 1
+
+result$probability <- result$calibratedProbab
 
 library(caret)
 mat <- confusionMatrix(data=as.factor(result$prediction), reference = as.factor(result$actual), positive = "1")
@@ -49,8 +72,8 @@ mat <- confusionMatrix(data=as.factor(result$prediction), reference = as.factor(
 
 #create new column
 result["newclass"] <- ifelse(result["actual"]==0 & result["prediction"]==0, "TN",
-                            ifelse(result["actual"]==0 & result["prediction"]==1, "FP",
-                                   ifelse(result["actual"]==1 & result["prediction"]==0, "FN", "TP")))
+                             ifelse(result["actual"]==0 & result["prediction"]==1, "FP",
+                                    ifelse(result["actual"]==1 & result["prediction"]==0, "FN", "TP")))
 
 #Create raw confusion matrix using "table" function
 (conf.val <- table(result["newclass"]))
@@ -179,7 +202,7 @@ p <- replicate(100000, sample(pos, size=1) > sample(neg, size=1))
 # ROC curve using "pROC" package
 library(pROC)
 roc.val <- roc(actual~probability, result)
-plot(roc.val, main="pROC package ROC plot")
+plot(roc.val, main="ROC plot")
 
 # AUC calculation using "pROC" package
 ## Call:
