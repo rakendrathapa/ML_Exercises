@@ -1,3 +1,7 @@
 /OctaveProjects/RUSBoost.zip
 .Rproj.user
-/dataset/*
+/dataset/.RData
+/dataset/.Rhistory
+/dataset/creditcard.Rdata
+/dataset/creditset.csv
+/dataset/Imbalanced-Regression-DataSets-master.zip
