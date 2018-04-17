@@ -13,16 +13,18 @@ data <- creditcard
 #create 70 percent of the data
 index <- sample(1:nrow(data),round(0.60*nrow(data)))
 
-## normalize the dataset
-dataset <- data
+## normalize the dataset. Remove the Time column from calculation.
+dataset <- data[,2:(NCOL(data))]
 
 #Normalize the numeric values
-temp <- dataset[,1:(NCOL(data) - 1)]
+temp <- dataset[,1:(NCOL(dataset) - 1)]
 scaled <- as.data.frame(scale(temp, center=TRUE, scale=TRUE))
 
 ## copy it back to the dataset
 dataset[,1:(NCOL(data) - 1)] <- scaled
 dataset$Class <- as.numeric(levels(data$Class))[data$Class]
+
+#write.csv(dataset, creditcard.csv, col.names = F, row.names = F)
 
 ## Create a training and test set for training
 train <- dataset[index,]
