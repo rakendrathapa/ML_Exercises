@@ -10,7 +10,7 @@ data <- creditcard
 ## Check no datapoint is missing, else needs to fix.
 #apply(data, 2, function(x) sum(is.na(x)))
 
-#create 70 percent of the data
+#create 60 percent of the data
 index <- sample(1:nrow(data),round(0.60*nrow(data)))
 
 ## normalize the dataset. Remove the Time column from calculation.
