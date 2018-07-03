@@ -1,0 +1,55 @@
+DELIVERIES
+Column Name			Column Description
+match_id			ID of each match (1 to 500)
+inning				Inning within the Match (1, 2, ...)
+batting_team			ID of the batting team (TeamId)
+bowling_team			ID of the bowling team (TeamId)
+over				Over number in the match (1, 2, ...,)
+ball				Ball number within the over (1, 2, ...)
+batsman				Batsman for this ball (PlayerID)
+non_striker			Non-striker Batsman for this ball (PlayerID)
+bowler				Bowler for this ball (PlayerID)
+is_super_over			A binary flag suggesting if this is a super over
+wide_runs			Number of wide runs on this ball
+bye_runs			Number of bye runs on this ball
+legbye_runs			Number of legbye runs on this ball
+noball_runs			Number of noball runs on this ball
+penalty_runs			Number of penalty runs on this ball
+batsman_runs			Number of batsman made runs on this ball
+extra_runs			Total number of extra runs on this ball (sum of wide, bye, legbye, noball, and penalty)
+total_runs			Total number of runs on this ball (sum of batsman_runs and extra_runs)
+player_dismissed		Player dismissed on this ball if any (PlayerID)
+dismissal_kind			Nature of the player dismissal (e.g. caught, bowled, etc.)
+fielder				Fielder	if dismissal_kind requires (PlayerID)
+
+MATCHES
+Column Name			Column Description
+match_id			Match ID corresponding to DELIVERIES file (1 to 500)
+season				Year of the match
+city				City where match was played (CityID)
+venue				Which stadium the match was played (StadiumID)
+team1				Team 1 (TeamID)
+team2				Team 2 (TeamID)
+toss_winner			Which team won the toss (TeamID)
+toss_decision			What did they decide to do? (field or bat)
+result				What was the result (normal or tie)
+dl_applied			Was DL applied (binary)
+
+winner				Which team won the match (TeamID)
+win_by_runs			Won by how many runs (0 otherwise)
+win_by_wickets			Won by how many wickets (0 otherwise)
+player_of_match			Who was the player of the match (PlayerID)
+
+
+PREDICT
+Column Name			Column Description
+match_id			Match ID (501 ... 636)
+season				Year of the match
+city				City where match was played (CityID)
+venue				Which stadium the match was played (StadiumID)
+team1				Team 1 (TeamID)
+team2				Team 2 (TeamID)
+toss_winner			Which team won the toss (TeamID)
+toss_decision		What did they decide to do? (field or bat)
+result				What was the result (normal or tie)
+dl_applied			Was DL applied (binary)
